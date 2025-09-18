@@ -1,6 +1,18 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { firestore } from '@/lib/firebase-admin';
+import { FieldValue } from 'firebase-admin/firestore';
+
+export async function inviteFriendsToGroup(groupId: string, friendIds: string[]) {
+  const groupRef = firestore.collection('groups').doc(groupId);
+
+  await groupRef.update({
+    members: FieldValue.arrayUnion(...friendIds),
+  });
+
+  revalidatePath(`/groups/${groupId}`);
+}
 
 // Placeholder for adding a member to a group
 export async function addMemberToGroup(groupId: string, memberEmail: string) {

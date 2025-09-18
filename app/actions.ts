@@ -2,6 +2,9 @@
 
 import { z } from 'zod'
 import { sendNotification } from './firebase';
+import { firestore } from './lib/firebase-admin';
+import { auth } from './lib/auth';
+import { revalidatePath } from 'next/cache';
 
 const createGroupSchema = z.object({
   name: z.string().min(1, { message: 'Group name is required' }),
@@ -118,6 +121,27 @@ export async function addExpense(prevState: { message: string | null; errors: { 
   await sendNotification(userToken, message);
 
   return { message: 'Successfully added expense!', errors: {} };
+}
+
+export async function addExpenseToGroup(groupId: string, formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    throw new Error('Unauthorized');
+  }
+
+  const description = formData.get('description') as string;
+  const amount = parseFloat(formData.get('amount') as string);
+  // ... other form data processing
+
+  await firestore.collection('expenses').add({
+    groupId,
+    description,
+    amount,
+    paidById: session.user.id,
+    // ... other expense data
+  });
+
+  revalidatePath(`/groups/${groupId}/expenses`);
 }
 
 export async function sendReminder(userId: string, message: string) {
