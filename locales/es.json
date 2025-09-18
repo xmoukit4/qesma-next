@@ -1,0 +1,21 @@
+{
+  "group": "Grupo",
+  "addExpense": "+ Agregar Gasto",
+  "addANewExpense": "Agregar un Nuevo Gasto",
+  "expenses": "Gastos",
+  "description": "Descripción",
+  "paidBy": "Pagado por",
+  "balances": "Saldos",
+  "owed": "Le deben",
+  "owes": "Debe",
+  "settleUp": "Liquidar",
+  "cancel": "Cancelar",
+  "add": "Agregar",
+  "amount": "Monto",
+  "currency": "Moneda",
+  "split": "Dividir",
+  "equally": "En partes iguales",
+  "custom": "Personalizado",
+  "customSplit": "División Personalizada",
+  "receiptOptional": "Recibo (Opcional)"
+}

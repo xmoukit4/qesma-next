@@ -1,0 +1,21 @@
+{
+  "group": "Group",
+  "addExpense": "+ Add Expense",
+  "addANewExpense": "Add a New Expense",
+  "expenses": "Expenses",
+  "description": "Description",
+  "paidBy": "Paid by",
+  "balances": "Balances",
+  "owed": "Owed",
+  "owes": "Owes",
+  "settleUp": "Settle Up",
+  "cancel": "Cancel",
+  "add": "Add",
+  "amount": "Amount",
+  "currency": "Currency",
+  "split": "Split",
+  "equally": "Equally",
+  "custom": "Custom",
+  "customSplit": "Custom Split",
+  "receiptOptional": "Receipt (Optional)"
+}
