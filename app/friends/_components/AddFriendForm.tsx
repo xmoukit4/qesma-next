@@ -82,7 +82,9 @@ export default function AddFriendForm() {
         ref={formRef}
         action={formAction}
         onSubmit={handleFormSubmit}
+        className="border-4 border-red-500 p-4"
     >
+      <h1 className="text-2xl font-bold text-red-500">DEBUGGING</h1>
       <div className="mb-4">
         <label htmlFor="email" className="block text-gray-400 text-sm font-bold mb-2">
           Friend&apos;s Email
