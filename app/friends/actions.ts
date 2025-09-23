@@ -17,22 +17,29 @@ async function findUserByEmail(email: string) {
 
 export async function sendFriendRequest(prevState: any, formData: FormData) {
     const email = formData.get('email') as string;
-    const userId = formData.get('userId') as string;
+    const idToken = formData.get('idToken') as string;
+
+    if (!idToken) {
+      return { error: 'Authentication token is missing. Please try again.' };
+    }
 
     try {
+      const decodedToken = await auth.verifyIdToken(idToken);
+      const senderId = decodedToken.uid;
+
       const recipient = await findUserByEmail(email);
   
       if (!recipient) {
         return { error: 'User not found.' };
       }
   
-      if (recipient.id === userId) {
+      if (recipient.id === senderId) {
         return { error: 'You cannot send a friend request to yourself.' };
       }
   
       const friendRequestRef = firestore.collection('friendRequests').doc();
       await friendRequestRef.set({
-        senderId: userId,
+        senderId: senderId,
         receiverId: recipient.id,
         status: 'pending',
       });
@@ -40,7 +47,7 @@ export async function sendFriendRequest(prevState: any, formData: FormData) {
       revalidatePath('/friends');
       return { message: 'Friend request sent.' };
     } catch (error: any) {
-      return { error: error.message };
+      return { error: 'Invalid authentication token or user not found.' };
     }
   }
   

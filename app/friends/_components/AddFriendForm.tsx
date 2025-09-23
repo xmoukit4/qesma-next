@@ -4,6 +4,8 @@
 import { useFormState } from "react-dom";
 import { useFormStatus } from "react-dom";
 import { sendFriendRequest } from "../actions";
+import { auth } from "../../../lib/firebase/clientApp";
+import { useState, useEffect } from "react";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -20,9 +22,21 @@ function SubmitButton() {
 
 export default function AddFriendForm() {
   const [state, formAction] = useFormState(sendFriendRequest, { message: "" });
+  const [idToken, setIdToken] = useState("");
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const token = await user.getIdToken();
+        setIdToken(token);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <form action={formAction}>
+      <input type="hidden" name="idToken" value={idToken} />
       <div className="mb-4">
         <label htmlFor="email" className="block text-gray-400 text-sm font-bold mb-2">
           Friend&apos;s Email
