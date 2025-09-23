@@ -4,9 +4,9 @@
 import { useFormState, useFormStatus } from "react-dom";
 import { sendFriendRequest } from "../actions";
 import { auth } from "../../../lib/firebase/clientApp";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-function SubmitButton({ isLoadingToken, idToken }) {
+function SubmitButton({ isLoadingToken, idToken }: { isLoadingToken: boolean; idToken: string }) {
   const { pending } = useFormStatus();
 
   const isDisabled = pending || isLoadingToken || !idToken;
@@ -16,6 +16,9 @@ function SubmitButton({ isLoadingToken, idToken }) {
   } else if (isLoadingToken) {
     buttonText = "Initializing...";
   }
+
+  console.log(`SubmitButton render: pending=${pending}, isLoadingToken=${isLoadingToken}, idToken exists=${!!idToken}, isDisabled=${isDisabled}`);
+
 
   return (
     <button
@@ -32,28 +35,54 @@ export default function AddFriendForm() {
   const [state, formAction] = useFormState(sendFriendRequest, { message: "" });
   const [idToken, setIdToken] = useState("");
   const [isLoadingToken, setIsLoadingToken] = useState(true);
+  const formRef = useRef<HTMLFormElement>(null);
+
 
   useEffect(() => {
+    console.log("AddFriendForm: useEffect running.");
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      console.log("AddFriendForm: onAuthStateChanged callback fired.");
       if (user) {
+        console.log(`AddFriendForm: User found with UID: ${user.uid}. Fetching token...`);
         try {
           const token = await user.getIdToken();
+          console.log(`AddFriendForm: Token fetched successfully. Token starts with: ${token.substring(0, 30)}...`);
           setIdToken(token);
         } catch (error) {
-          console.error("Error getting ID token:", error);
+          console.error("AddFriendForm: Error getting ID token:", error);
         } finally {
+          console.log("AddFriendForm: Setting isLoadingToken to false.");
           setIsLoadingToken(false);
         }
       } else {
+        console.log("AddFriendForm: No user is signed in.");
         setIsLoadingToken(false);
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      console.log("AddFriendForm: useEffect cleanup. Unsubscribing from onAuthStateChanged.");
+      unsubscribe();
+    }
   }, []);
 
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    // This is for logging only. We will let the `action` prop handle the actual submission.
+    if (formRef.current) {
+        const formData = new FormData(formRef.current);
+        const token = formData.get('idToken');
+        console.log(`AddFriendForm: Form is being submitted. Manually checking FormData for idToken. Token value is: ${token && typeof token === 'string' ? token.substring(0, 30) + '...' : 'MISSING OR EMPTY'}`);
+    }
+  };
+  
+  console.log(`AddFriendForm render: isLoadingToken=${isLoadingToken}, idToken exists=${!!idToken}`);
+
   return (
-    <form action={formAction}>
+    <form
+        ref={formRef}
+        action={formAction}
+        onSubmit={handleFormSubmit}
+    >
       <div className="mb-4">
         <label htmlFor="email" className="block text-gray-400 text-sm font-bold mb-2">
           Friend&apos;s Email
