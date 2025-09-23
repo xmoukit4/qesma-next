@@ -1,9 +1,9 @@
 'use server'
 
 import { z } from 'zod'
-import { sendNotification } from './firebase';
-import { firestore } from './lib/firebase-admin';
-import { auth } from './lib/auth';
+import { sendNotification } from '../lib/firebase';
+import { firestore } from 'firebase-admin';
+import { auth } from '../lib/firebase/clientApp';
 import { revalidatePath } from 'next/cache';
 
 const createGroupSchema = z.object({
