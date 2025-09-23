@@ -117,10 +117,11 @@ export default function GroupPage({ params }: { params: { id: string } }) {
       const result = await addMemberToGroup(params.id, newMemberEmail);
       if (!result.success) {
         setError(result.message);
-      } else {
+      }
+       else {
         setNewMemberEmail('');
       }
-    } catch (_: unknown) {
+    } catch {
       setError('An unexpected error occurred.');
     }
     setIsSubmitting(false);
@@ -129,7 +130,7 @@ export default function GroupPage({ params }: { params: { id: string } }) {
   const handleRemoveMember = async (memberId: string) => {
     try {
       await removeMemberFromGroup(params.id, memberId);
-    } catch (_: unknown) {
+    } catch {
       alert('Failed to remove member.');
     }
   };
