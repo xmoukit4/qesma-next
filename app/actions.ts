@@ -6,50 +6,6 @@ import { firestore } from './lib/firebase-admin';
 import { auth } from './lib/auth';
 import { revalidatePath } from 'next/cache';
 
-const createGroupSchema = z.object({
-  name: z.string().min(1, { message: 'Group name is required' }),
-})
-
-export async function createGroup(prevState: { message: string | null; errors: { [key: string]: string[] | undefined }; }, formData: FormData) {
-  const validatedFields = createGroupSchema.safeParse({
-    name: formData.get('name'),
-  })
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Group.',
-    }
-  }
-
-  // In a real application, you would save the group to a database.
-  console.log('Creating group:', validatedFields.data.name);
-
-  return { message: 'Successfully created group!', errors: {} }
-}
-
-const joinGroupSchema = z.object({
-  code: z.string().min(6, { message: 'Group code must be 6 characters long' }),
-});
-
-export async function joinGroup(prevState: { message: string | null; errors: { [key: string]: string[] | undefined }; }, formData: FormData) {
-  const validatedFields = joinGroupSchema.safeParse({
-    code: formData.get('code'),
-  });
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Invalid group code.',
-    };
-  }
-
-  // In a real application, you would find and join the group.
-  console.log('Joining group with code:', validatedFields.data.code);
-
-  return { message: 'Successfully joined group!', errors: {} };
-}
-
 const addExpenseSchema = z.object({
   description: z.string().min(1, { message: 'Description is required' }),
   amount: z.coerce.number().gt(0, { message: 'Amount must be greater than 0' }),
@@ -116,8 +72,9 @@ export async function addExpense(prevState: { message: string | null; errors: { 
   console.log('Adding expense:', expenseData);
 
   // Send a notification
-  const userToken = 'BHB5w5twvl53WZWEeB04L8H5NTVdC1SCNEAddq14N3WhLKD0RXNKalQy5YORBsX02uzYhZdj-7YvH_ihOf7pyoQ'; // Replace with the actual device token
   const message = `New expense added: ${description} for ${amount} ${currency}`;
+  // In a real application, you would look up the user's device token from a database.
+  const userToken = 'BHB5w5twvl53WZWEeB04L8H5NTVdC1SCNEAddq14N3WhLKD0RXNKalQy5YORBsX02uzYhZdj-7YvH_ihOf7pyoQ'; // Replace with the actual device token
   await sendNotification(userToken, message);
 
   return { message: 'Successfully added expense!', errors: {} };
