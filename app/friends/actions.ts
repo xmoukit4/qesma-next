@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { firestore, auth } from '@/lib/firebase-admin';
+import { FieldValue } from 'firebase-admin/firestore';
 
 async function findUserByEmail(email: string) {
   const usersRef = firestore.collection('users');
@@ -58,10 +59,10 @@ export async function sendFriendRequest(prevState: any, formData: FormData) {
     batch.delete(requestRef);
   
     const receiverRef = firestore.collection('users').doc(receiverId);
-    batch.update(receiverRef, { friends: firestore.FieldValue.arrayUnion(senderId) });
+    batch.update(receiverRef, { friends: FieldValue.arrayUnion(senderId) });
   
     const senderRef = firestore.collection('users').doc(senderId);
-    batch.update(senderRef, { friends: firestore.FieldValue.arrayUnion(receiverId) });
+    batch.update(senderRef, { friends: FieldValue.arrayUnion(receiverId) });
   
     await batch.commit();
   
@@ -77,10 +78,10 @@ export async function sendFriendRequest(prevState: any, formData: FormData) {
     const batch = firestore.batch();
   
     const userRef = firestore.collection('users').doc(userId);
-    batch.update(userRef, { friends: firestore.FieldValue.arrayRemove(friendId) });
+    batch.update(userRef, { friends: FieldValue.arrayRemove(friendId) });
   
     const friendRef = firestore.collection('users').doc(friendId);
-    batch.update(friendRef, { friends: firestore.FieldValue.arrayRemove(userId) });
+    batch.update(friendRef, { friends: FieldValue.arrayRemove(userId) });
   
     await batch.commit();
   
