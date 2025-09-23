@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuth } from '@/components/auth-provider';
+import { useAuth } from '@/context/AuthContext';
 
 export function Navigation() {
   const { user, signOut } = useAuth();
