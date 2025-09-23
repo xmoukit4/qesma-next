@@ -1,9 +1,9 @@
 'use server'
 
 import { z } from 'zod'
-import { sendNotification } from '@/lib/firebase';
 import { firestore, auth } from '@/lib/firebase-admin';
 import { revalidatePath } from 'next/cache';
+import * as admin from 'firebase-admin';
 
 const addExpenseSchema = z.object({
   description: z.string().min(1, { message: 'Description is required' }),
@@ -12,6 +12,22 @@ const addExpenseSchema = z.object({
   split: z.enum(['equally', 'custom']),
   receipt: z.instanceof(File).optional(),
 });
+
+export const sendNotification = async (token: string, message: string) => {
+  const payload = {
+    notification: {
+      title: 'Splitter',
+      body: message,
+    },
+  };
+
+  try {
+    await admin.messaging().sendToDevice(token, payload);
+    console.log('Notification sent successfully');
+  } catch (error) {
+    console.error('Error sending notification:', error);
+  }
+};
 
 export async function addExpense(prevState: { message: string | null; errors: { [key: string]: string[] | undefined }; }, formData: FormData) {
   const validatedFields = addExpenseSchema.safeParse({

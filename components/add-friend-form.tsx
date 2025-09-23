@@ -1,24 +1,24 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { sendFriendRequest } from '@/app/friends/actions';
 import { SubmitButton } from '@/components/submit-button';
 
-export function AddFriendForm() {
-  const [state, formAction] = useFormState(sendFriendRequest, null);
+export function AddFriendForm({ userId }: { userId: string }) {
+  const [state, formAction] = useActionState(sendFriendRequest, null);
 
   return (
     <form action={formAction} className="flex items-center gap-4">
+      <input type="hidden" name="userId" value={userId} />
       <input
         type="email"
         name="email"
         placeholder="Enter friend's email"
-        className="input input-bordered w-full"
-        required
+        className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <SubmitButton />
-      {state?.message && <p className="text-sm text-gray-500 mt-2">{state.message}</p>}
-      {state?.error && <p className="text-sm text-red-500 mt-2">{state.error}</p>}
+      {state?.error && <p className="text-red-500">{state.error}</p>}
+      {state?.message && <p className="text-green-500">{state.message}</p>}
     </form>
   );
 }

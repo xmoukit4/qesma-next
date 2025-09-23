@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { doc, onSnapshot, DocumentData } from 'firebase/firestore';
-import { firestore } from '@/lib/firebase';
+import { firestore } from '@/lib/firebase/clientApp';
 import { InviteFriends } from '@/components/invite-friends';
 
 interface Group extends DocumentData {

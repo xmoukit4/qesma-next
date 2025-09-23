@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { firestore } from '@/lib/firebase';
+import { firestore } from '@/lib/firebase/clientApp';
 import { collection, query, where, onSnapshot, getDoc, doc, DocumentData } from 'firebase/firestore';
 import { acceptFriendRequest, rejectFriendRequest } from '@/app/friends/actions';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/Button';
 
 interface Sender extends DocumentData {
     displayName: string;

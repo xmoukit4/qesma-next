@@ -1,12 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/auth-provider';
-import { firestore } from '@/lib/firebase';
+import { useAuth } from '@/context/AuthContext';
+import { firestore } from '@/lib/firebase/clientApp';
 import { doc, onSnapshot, getDoc, DocumentData } from 'firebase/firestore';
 import { inviteFriendsToGroup } from '@/app/groups/actions';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import Button from '@/components/Button';
 
 interface Friend extends DocumentData {
     id: string;
@@ -54,10 +53,11 @@ export function InviteFriends({ groupId }: { groupId: string }) {
       <div className="space-y-2">
         {friends.map((friend) => (
           <div key={friend.id} className="flex items-center gap-4">
-            <Checkbox
+            <input
+              type="checkbox"
               id={friend.id}
               checked={selectedFriends.includes(friend.id)}
-              onCheckedChange={() => handleSelectFriend(friend.id)}
+              onChange={() => handleSelectFriend(friend.id)}
             />
             <label htmlFor={friend.id} className="font-semibold">
               {friend.displayName}

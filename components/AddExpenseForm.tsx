@@ -5,7 +5,7 @@ import { addExpenseToGroup } from '../app/actions';
 import Button from './Button';
 import { useState, useEffect } from 'react';
 import { TagIcon } from '@heroicons/react/24/outline';
-import { firestore } from '@/lib/firebase';
+import { firestore } from '@/lib/firebase/clientApp';
 import { doc, onSnapshot } from 'firebase/firestore';
 
 const initialState = {

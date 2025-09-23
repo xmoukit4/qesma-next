@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { firestore } from '@/lib/firebase';
+import { firestore } from '@/lib/firebase/clientApp';
 import { doc, onSnapshot, getDoc, DocumentData } from 'firebase/firestore';
 import { removeFriend } from '@/app/friends/actions';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/Button';
 
 interface Friend extends DocumentData {
     id: string;
@@ -35,10 +35,6 @@ export function FriendsList({ userId }: { userId: string }) {
     return () => unsubscribe();
   }, [userId]);
 
-  if (friends.length === 0) {
-    return <p>You have no friends yet. Add some!</p>;
-  }
-
   return (
     <ul className="space-y-4">
       {friends.map((friend) => (
@@ -47,7 +43,7 @@ export function FriendsList({ userId }: { userId: string }) {
             <p className="font-semibold">{friend.displayName}</p>
             <p className="text-sm text-gray-500">{friend.email}</p>
           </div>
-          <form action={() => removeFriend(userId, friend.id)}>
+          <form action={() => removeFriend(friend.id, userId)}>
             <Button type="submit" variant="destructive">Remove</Button>
           </form>
         </li>
