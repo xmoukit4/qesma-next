@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState, useFormStatus } from 'react-dom';
-import { joinGroup } from '../app/actions';
+import { joinGroup } from '@/app/groups/actions';
 import Button from './Button';
 
 const initialState = {
