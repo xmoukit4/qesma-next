@@ -2,13 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth } from '../../lib/firebase/clientApp';
+import { auth, firestore } from '../../lib/firebase/clientApp'; // Assumes firestore is exported from clientApp
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  User
 } from 'firebase/auth';
+import { doc, setDoc } from "firebase/firestore"; 
 import Button from '../../components/Button';
 
 export default function AuthPage() {
@@ -18,12 +20,27 @@ export default function AuthPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // Helper function to create user document in Firestore
+  const createUserDocument = async (user: User) => {
+    if (!user.email) {
+      throw new Error("Cannot create user document without an email.");
+    }
+    const userRef = doc(firestore, "users", user.uid);
+    await setDoc(userRef, {
+      email: user.email,
+      displayName: user.displayName || user.email.split('@')[0],
+      photoURL: user.photoURL,
+      createdAt: new Date(),
+    });
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     try {
       if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await createUserDocument(userCredential.user);
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
@@ -41,7 +58,8 @@ export default function AuthPage() {
     setError(null);
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const userCredential = await signInWithPopup(auth, provider);
+      await createUserDocument(userCredential.user); // Use setDoc to handle both new and existing users
       router.push('/dashboard');
     } catch (err: unknown) {
       if (err instanceof Error) {
