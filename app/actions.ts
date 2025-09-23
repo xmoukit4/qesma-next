@@ -1,9 +1,8 @@
 'use server'
 
 import { z } from 'zod'
-import { sendNotification } from '../lib/firebase';
-import { firestore } from 'firebase-admin';
-import { auth } from '../lib/firebase/clientApp';
+import { sendNotification } from '@/lib/firebase';
+import { firestore, auth } from '@/lib/firebase-admin';
 import { revalidatePath } from 'next/cache';
 
 const addExpenseSchema = z.object({
@@ -72,17 +71,14 @@ export async function addExpense(prevState: { message: string | null; errors: { 
   console.log('Adding expense:', expenseData);
 
   // Send a notification
-  const message = `New expense added: ${description} for ${amount} ${currency}`;
-  // In a real application, you would look up the user's device token from a database.
-  const userToken = 'BHB5w5twvl53WZWEeB04L8H5NTVdC1SCNEAddq14N3WhLKD0RXNKalQy5YORBsX02uzYhZdj-7YvH_ihOf7pyoQ'; // Replace with the actual device token
-  await sendNotification(userToken, message);
+  revalidatePath('/')
 
   return { message: 'Successfully added expense!', errors: {} };
 }
 
 export async function addExpenseToGroup(groupId: string, formData: FormData) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const session = await auth().getUser(formData.get("userId"));
+  if (!session?.uid) {
     throw new Error('Unauthorized');
   }
 
@@ -94,7 +90,7 @@ export async function addExpenseToGroup(groupId: string, formData: FormData) {
     groupId,
     description,
     amount,
-    paidById: session.user.id,
+    paidById: session.uid,
     // ... other expense data
   });
 
