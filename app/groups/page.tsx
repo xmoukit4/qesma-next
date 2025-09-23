@@ -31,11 +31,9 @@ export default function GroupsPage() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {groups.map(group => (
-          <Link key={group.id} href={`/groups/${group.id}`}>
-            <a className="block p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-              <h2 className="text-2xl font-semibold mb-2">{group.name}</h2>
-              <p className="text-gray-500 dark:text-gray-400">{group.description}</p>
-            </a>
+          <Link key={group.id} href={`/groups/${group.id}`} className="block p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <h2 className="text-2xl font-semibold mb-2">{group.name}</h2>
+            <p className="text-gray-500 dark:text-gray-400">{group.description}</p>
           </Link>
         ))}
       </div>

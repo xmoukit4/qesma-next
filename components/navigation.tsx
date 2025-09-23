@@ -14,6 +14,7 @@ export function Navigation() {
           <>
             <Link href="/groups">Groups</Link>
             <Link href="/friends">Friends</Link>
+            <Link href="/groups/invitations">Invitations</Link>
           </>
         )}
       </div>

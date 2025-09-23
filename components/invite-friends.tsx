@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { firestore } from '@/lib/firebase/clientApp';
 import { doc, onSnapshot, getDoc, DocumentData } from 'firebase/firestore';
 import { inviteFriendsToGroup } from '@/app/groups/actions';
-import Button from '@/components/Button';
+import { Button } from '@/components/ui/button';
 
 interface Friend extends DocumentData {
     id: string;
