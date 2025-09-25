@@ -92,4 +92,10 @@ This document outlines the architecture and features of a split-bill application
     *   A `GroupMembers` component has been created to display a list of all members in the group, with their avatars and display names.
     *   The `InviteFriends` component allows users to select from their friends and invite them to the group.
     *   A "Back to Groups" button has been added for easy navigation.
-
+* **Loading Indicators**:
+    *   Implemented loading indicators across the application to improve user experience.
+    *   **Authentication**: Added a loading overlay to the sign-in/sign-up page.
+    *   **Friends List**: Added a skeleton loading state to the friends page.
+    *   **Groups List**: Added a skeleton loading state to the groups page.
+    *   **Group Details**: Added a skeleton loading state to the group details page.
+    *   **Create Group**: Added a loading indicator to the "Create Group" button.
