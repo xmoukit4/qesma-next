@@ -1,72 +1,250 @@
-import Link from 'next/link';
-import { CheckCircleIcon } from '@heroicons/react/24/solid';
+import Link from "next/link";
+import {
+  Activity,
+  CreditCard,
+  DollarSign,
+  Download,
+  Users,
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Home() {
   return (
-    <div className="min-h-screen text-white bg-gradient-to-br from-gray-900 to-gray-800">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-            Splitter
-          </Link>
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="#features" className="text-gray-300 hover:text-white transition-colors">Features</Link>
-            <Link href="#about" className="text-gray-300 hover:text-white transition-colors">About</Link>
-            <Link href="/dashboard" className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-              Go to Dashboard
-            </Link>
-          </nav>
-          <button className="md:hidden text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" /></svg>
-          </button>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <main className="pt-32 bg-transparent">
-        <section className="container mx-auto px-6 py-24 text-center">
-          <h1 className="text-6xl md:text-7xl font-bold tracking-tight text-white leading-tight">
-            Stop stressing, <br /> start <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">splitting.</span>
-          </h1>
-          <p className="text-gray-300 mt-6 text-xl md:text-2xl max-w-3xl mx-auto">
-            The simplest and most beautiful way to manage group expenses and settle up with friends.
-          </p>
-          <Link href="/dashboard" className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold px-10 py-4 rounded-full mt-12 inline-block shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 text-lg">
-            Get Started for Free
-          </Link>
+    <div className="flex min-h-screen w-full flex-col">
+      <main className="flex-1">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
+          <div className="container px-4 md:px-6">
+            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+              <div className="flex flex-col justify-center space-y-4">
+                <div className="space-y-2">
+                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                    Simplify Your Group Expenses with Qesma
+                  </h1>
+                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
+                    Qesma is the easiest way to split bills and manage shared
+                    expenses with friends, family, and roommates.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                  <Button asChild size="lg">
+                    <Link href="/dashboard">Get Started</Link>
+                  </Button>
+                  <Button asChild variant="outline" size="lg">
+                    <Link href="#features">Learn More</Link>
+                  </Button>
+                </div>
+              </div>
+              <img
+                src="/placeholder.svg"
+                alt="Hero"
+                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square"
+              />
+            </div>
+          </div>
         </section>
-
-        {/* Features Section */}
-        <section id="features" className="py-24 bg-white/5">
-          <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center text-white">Why you&apos;ll love Splitter</h2>
-            <div className="grid md:grid-cols-3 gap-12 mt-16">
-              <div className="bg-white/10 p-8 rounded-2xl shadow-lg border border-white/20 transform hover:scale-105 transition-transform duration-300">
-                <CheckCircleIcon className="h-10 w-10 text-green-400 mb-4" />
-                <h3 className="text-2xl font-bold text-white">Seamless Group Creation</h3>
-                <p className="text-gray-300 mt-2">Create and join groups for any occasion in just a few clicks. Trips, roommates, parties, and more.</p>
+        <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <div className="inline-block rounded-lg bg-muted-foreground px-3 py-1 text-sm text-background">
+                  Key Features
+                </div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  Everything You Need to Settle Up
+                </h2>
+                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  From creating groups and tracking expenses to settling debts,
+                  Qesma has you covered.
+                </p>
               </div>
-              <div className="bg-white/10 p-8 rounded-2xl shadow-lg border border-white/20 transform hover:scale-105 transition-transform duration-300">
-                <CheckCircleIcon className="h-10 w-10 text-green-400 mb-4" />
-                <h3 className="text-2xl font-bold text-white">Intuitive Expense Logging</h3>
-                <p className="text-gray-300 mt-2">Log expenses with our beautiful interface. Add custom splits and attach receipts effortlessly.</p>
+            </div>
+            <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3 lg:gap-12">
+              <div className="grid gap-1">
+                <Users className="h-8 w-8 text-primary" />
+                <h3 className="text-xl font-bold">Groups</h3>
+                <p className="text-muted-foreground">
+                  Create groups for any occasion and invite friends to join.
+                </p>
               </div>
-              <div className="bg-white/10 p-8 rounded-2xl shadow-lg border border-white/20 transform hover:scale-105 transition-transform duration-300">
-                <CheckCircleIcon className="h-10 w-10 text-green-400 mb-4" />
-                <h3 className="text-2xl font-bold text-white">Intelligent Debt Settlement</h3>
-                <p className="text-gray-300 mt-2">Our smart algorithm finds the simplest way to settle up, minimizing the number of payments.</p>
+              <div className="grid gap-1">
+                <CreditCard className="h-8 w-8 text-primary" />
+                <h3 className="text-xl font-bold">Expense Tracking</h3>
+                <p className="text-muted-foreground">
+                  Log expenses and split them with group members in just a few
+                  taps.
+                </p>
+              </div>
+              <div className="grid gap-1">
+                <DollarSign className="h-8 w-8 text-primary" />
+                <h3 className="text-xl font-bold">Debt Settlement</h3>
+                <p className="text-muted-foreground">
+                  Qesma calculates who owes what, making it easy to settle up.
+                </p>
               </div>
             </div>
           </div>
         </section>
+        <section className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container grid items-center gap-6 px-4 md:px-6 lg:grid-cols-2 lg:gap-10">
+            <div className="space-y-2">
+              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
+                How It Works
+              </h2>
+              <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                Getting started with Qesma is as easy as 1-2-3.
+              </p>
+            </div>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
+                  1
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Create a Group</h3>
+                  <p className="text-muted-foreground">
+                    Start by creating a group for your trip, household, or any
+                    other shared expenses.
+                  </p>
+                </div>
+              </div>
+              <Separator />
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
+                  2
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Add Expenses</h3>
+                  <p className="text-muted-foreground">
+                    Log your expenses and split them with your group members.
+                  </p>
+                </div>
+              </div>
+              <Separator />
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
+                  3
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Settle Up</h3>
+                  <p className="text-muted-foreground">
+                    Qesma simplifies your balances into the easiest to repay
+                    debts.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+          <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
+            <div className="space-y-3">
+              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
+                What Our Users Say
+              </h2>
+              <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                Don't just take our word for it. Here's what our users have
+                to say about Qesma.
+              </p>
+            </div>
+            <div className="grid w-full grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-4">
+                    <Avatar>
+                      <AvatarImage src="/placeholder-user.jpg" />
+                      <AvatarFallback>JD</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <CardTitle>John Doe</CardTitle>
+                      <CardDescription>
+                        Co-founder, Acme Inc.
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    "Qesma has been a lifesaver for our group trips. No more
+                    spreadsheets or complicated calculations."
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-4">
+                    <Avatar>
+                      <AvatarImage src="/placeholder-user.jpg" />
+                      <AvatarFallback>JA</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <CardTitle>Jane Appleseed</CardTitle>
+                      <CardDescription>
+                        Marketing Manager, Qesma
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    "I use Qesma with my roommates to split bills, and it has
+                    made our lives so much easier."
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-4">
+                    <Avatar>
+                      <AvatarImage src="/placeholder-user.jpg" />
+                      <AvatarFallback>SM</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <CardTitle>Sarah Miller</CardTitle>
+                      <CardDescription>Student</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    "Qesma is a must-have for any group of friends who want to
+                    keep track of their shared expenses."
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-transparent text-white py-12">
-        <div className="container mx-auto px-6 text-center">
-          <p>&copy; 2024 Splitter. All rights reserved.</p>
-        </div>
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+        <p className="text-xs text-muted-foreground">
+          &copy; {new Date().getFullYear()} Qesma. All rights reserved.
+        </p>
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+          <Link
+            href="#"
+            className="text-xs hover:underline underline-offset-4"
+            prefetch={false}
+          >
+            Terms of Service
+          </Link>
+          <Link
+            href="#"
+            className="text-xs hover:underline underline-offset-4"
+            prefetch={false}
+          >
+            Privacy
+          </Link>
+        </nav>
       </footer>
     </div>
   );

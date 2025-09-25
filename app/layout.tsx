@@ -4,6 +4,7 @@ import "./globals.css";
 import { LocaleProvider } from "@/hooks/useLocale";
 import { AuthProvider } from "@/context/AuthContext";
 import { Navigation } from "@/components/navigation";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
               <LocaleProvider>
                 <Navigation />
                 {children}
+                <Toaster />
               </LocaleProvider>
             </AuthProvider>
           </main>

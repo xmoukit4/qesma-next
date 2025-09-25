@@ -1,89 +1,48 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-import { firestore, auth } from '@/lib/firebase-admin';
+import { z } from 'zod';
+import { auth } from '@/lib/firebase-admin';
+import { firestore } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 
-async function findUserByEmail(email: string) {
-  const usersRef = firestore.collection('users');
-  const query = usersRef.where('email', '==', email).limit(1);
-  const snapshot = await query.get();
+const addFriendSchema = z.object({
+  email: z.string().email({ message: 'Invalid email address' }),
+});
 
-  if (snapshot.empty) {
-    return null;
+export async function addFriendByEmail(prevState: { errors?: { email?: string[] }; message?: string }, formData: FormData) {
+  const validatedFields = addFriendSchema.safeParse({
+    email: formData.get('email'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: ''
+    };
   }
 
-  return snapshot.docs[0];
+  try {
+    const currentUser = await auth.verifyIdToken(formData.get('idToken') as string);
+    if (!currentUser) {
+      return { errors: {}, message: 'You must be logged in to add friends.' };
+    }
+
+    const friendUserRecord = await auth.getUserByEmail(validatedFields.data.email);
+    if (!friendUserRecord) {
+      return { errors: { email: ['User not found'] }, message: '' };
+    }
+
+    const currentUserRef = firestore.collection('users').doc(currentUser.uid);
+    const friendUserRef = firestore.collection('users').doc(friendUserRecord.uid);
+
+    await firestore.runTransaction(async (transaction) => {
+      transaction.update(currentUserRef, { friends: FieldValue.arrayUnion(friendUserRecord.uid) });
+      transaction.update(friendUserRef, { friends: FieldValue.arrayUnion(currentUser.uid) });
+    });
+
+    return { errors: {}, message: 'Friend added successfully!' };
+
+  } catch {
+    return { errors: {}, message: 'An error occurred while adding the friend.' };
+  }
 }
-
-export async function sendFriendRequest(prevState: any, formData: FormData) {
-    const email = formData.get('email') as string;
-    const idToken = formData.get('idToken') as string;
-
-    if (!idToken) {
-      return { error: 'Authentication token is missing. Please try again.' };
-    }
-
-    try {
-      const decodedToken = await auth.verifyIdToken(idToken);
-      const senderId = decodedToken.uid;
-
-      const recipient = await findUserByEmail(email);
-  
-      if (!recipient) {
-        return { error: 'User not found.' };
-      }
-  
-      if (recipient.id === senderId) {
-        return { error: 'You cannot send a friend request to yourself.' };
-      }
-  
-      const friendRequestRef = firestore.collection('friendRequests').doc();
-      await friendRequestRef.set({
-        senderId: senderId,
-        receiverId: recipient.id,
-        status: 'pending',
-      });
-  
-      revalidatePath('/friends');
-      return { message: 'Friend request sent.' };
-    } catch (error: any) {
-      return { error: 'Invalid authentication token or user not found.' };
-    }
-  }
-  
-  export async function acceptFriendRequest(requestId: string, senderId: string, receiverId: string) {
-    const batch = firestore.batch();
-  
-    const requestRef = firestore.collection('friendRequests').doc(requestId);
-    batch.delete(requestRef);
-  
-    const receiverRef = firestore.collection('users').doc(receiverId);
-    batch.update(receiverRef, { friends: FieldValue.arrayUnion(senderId) });
-  
-    const senderRef = firestore.collection('users').doc(senderId);
-    batch.update(senderRef, { friends: FieldValue.arrayUnion(receiverId) });
-  
-    await batch.commit();
-  
-    revalidatePath('/friends');
-  }
-  
-  export async function rejectFriendRequest(requestId: string) {
-    await firestore.collection('friendRequests').doc(requestId).delete();
-    revalidatePath('/friends');
-  }
-  
-  export async function removeFriend(friendId: string, userId: string) {
-    const batch = firestore.batch();
-  
-    const userRef = firestore.collection('users').doc(userId);
-    batch.update(userRef, { friends: FieldValue.arrayRemove(friendId) });
-  
-    const friendRef = firestore.collection('users').doc(friendId);
-    batch.update(friendRef, { friends: FieldValue.arrayRemove(userId) });
-  
-    await batch.commit();
-  
-    revalidatePath('/friends');
-  }

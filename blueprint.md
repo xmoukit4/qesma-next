@@ -1,73 +1,95 @@
-# Splitter Application Blueprint
+
+# Blueprint: Next.js Firebase Split-Bill App
 
 ## Overview
 
-Splitter is a web application designed to help users manage and split expenses with friends and in groups. It provides a clear and intuitive interface for tracking shared costs, sending reminders, and settling debts. The application is built on the Next.js framework, leveraging Firebase for backend services including authentication and database management.
+This document outlines the architecture and features of a split-bill application built with Next.js and Firebase. The app allows users to create groups, add friends, and split expenses. It also includes a dashboard for visualizing data.
 
-## Project Outline
+## Design and Styling
 
-### Core Technologies
+*   **Framework**: Next.js with TypeScript
+*   **Styling**: Tailwind CSS with shadcn/ui components for a modern, consistent look and feel.
+*   **UI Components**:
+    *   `Button`: Primary user action component.
+    *   `Input`: For user data entry.
+    *   `Card`: To display grouped information.
+    *   `Toast`: For user feedback.
+    *   `Form`: For handling user input and validation.
+    *   `Dashboard`: A modern, interactive dashboard with charts and recent sales.
 
-*   **Framework:** Next.js with App Router
-*   **Backend:** Firebase (Authentication, Firestore)
-*   **Styling:** Tailwind CSS
+## Features
 
-### Design and Styling
+### 1. Authentication
 
-*   **Theme:** Modern, dark theme with a gradient text for headers.
-*   **Layout:** Responsive, mobile-first design.
-*   **Components:** Reusable components for buttons, forms, and lists.
-*   **Color Palette:**
-    *   Background: `gray-900`
-    *   Primary Elements: `gray-800`
-    *   Accent: Gradient from `blue-400` to `purple-500`
-    *   Text: `white`, `gray-400`
-    *   Buttons: `blue-600` (primary), `red-600` (Google sign-in)
+*   **Email & Password**: Users can sign up and sign in using their email and password.
+*   **Google Sign-In**: Users can authenticate using their Google accounts.
+*   **Magic Link**: Users can sign in without a password via a magic link sent to their email.
+*   **Password Strength Indicator**: Provides visual feedback on password strength during sign-up.
 
-### Features
+### 2. User Profiles
 
-#### 1. User Authentication
+*   User documents are created in Firestore upon registration.
+*   Each user has a `displayName`, `email`, and `photoURL`.
 
-*   **Sign-up/Sign-in:** Users can create an account or sign in using email/password or Google.
-*   **Session Management:** Firebase Authentication handles user sessions.
-*   **Firestore User Sync:** Upon registration or first sign-in, a corresponding user document is created in the `users` collection in Firestore. This document stores the user's email, display name, photo URL, and creation date.
+### 3. Groups
 
-#### 2. Friend Management
+*   Users can create and join groups.
+*   Group information is stored in Firestore.
 
-*   **Add Friend:** Users can send friend requests to other users via email.
-    *   **Secure:** The process is secured by verifying the sender's identity using a Firebase ID token.
-    *   **Error Handling:** The UI provides feedback if the user is not found, if the request is sent to oneself, or if the authentication token is missing or invalid.
-*   **Friend Requests:** Users can view pending friend requests and accept or reject them.
-*   **Friends List:** Users can see a list of their current friends.
-*   **Remove Friend:** Users can remove friends from their list.
+### 4. Friends
 
-#### 3. Group and Expense Management (Conceptual)
+*   Users can add friends by email.
+*   Friend relationships are stored in Firestore.
 
-*   **Create Groups:** Users can create groups and add friends to them.
-*   **Add Expenses:** Users can add expenses to a group, specifying the description, amount, currency, and how the cost should be split (e.g., equally, custom).
-*   **Expense Tracking:** The application tracks who owes whom within each group.
-*   **Reminders:** Users can send reminders to others to settle their debts.
+### 5. Expenses
 
-## Current Implementation Plan & Steps
+*   Users can add expenses to groups.
+*   Expenses are stored in Firestore, with each expense linked to a group.
 
-The following steps have been implemented to fix the "friend request" feature and improve the application's overall robustness:
+### 6. Dashboard
 
-1.  **Diagnosed Firestore `NOT_FOUND` Error:** Identified that friend requests were failing because user documents were not being created in Firestore upon sign-up.
-2.  **Implemented Firestore User Sync:**
-    *   Modified `app/auth/page.tsx` to include logic that creates a user document in the `users` collection after a successful `createUserWithEmailAndPassword` or `signInWithPopup` event.
-    *   Added a helper function `createUserDocument` to encapsulate this logic.
-3.  **Addressed "Invalid document reference" Error:**
-    *   Improved the `createUserDocument` function in `app/auth/page.tsx` by adding a guard clause to ensure the `user.uid` is present before attempting to create a Firestore document reference, preventing a crash if the user object is malformed.
-4.  **Fixed Empty `senderId` in Friend Requests:**
-    *   Identified that the `senderId` was not being correctly passed in the `sendFriendRequest` server action.
-    *   Modified `app/friends/_components/AddFriendForm.tsx` to securely capture the current user's ID token via `auth.onAuthStateChanged` and include it as a hidden field in the form.
-    *   Updated the `sendFriendRequest` action in `app/friends/actions.ts` to verify the received ID token using the Firebase Admin SDK and use the decoded UID as the official `senderId`.
-5.  **Resolved "Authentication token is missing" Race Condition:**
-    *   Fixed a bug where the friend request form could be submitted before the ID token was fetched.
-    *   Updated `app/friends/_components/AddFriendForm.tsx` to disable the submit button until the `idToken` is available, providing clear visual feedback to the user.
-6.  **Resolved Firestore `permission-denied` Errors:**
-    *   Diagnosed that client-side requests were failing due to restrictive default security rules.
-    *   Created `firestore.rules` to define access control for `users` and `friendRequests` collections.
-    *   Created `firebase.json` to configure the Firebase CLI for deployment.
-    *   Authenticated with Firebase and set the active project to `qesma-891b6`.
-    *   Deployed the new security rules, resolving the permission errors.
+*   **Overview**: A visual overview of key metrics.
+*   **Recent Sales**: A list of recent sales.
+*   **Team Switcher**: Allows users to switch between different teams or accounts.
+*   **Date Range Picker**: Allows users to filter data by date.
+
+## Recent Changes
+
+*   **New Dashboard**:
+    *   Replaced the old dashboard with a new, modern dashboard.
+    *   Added a `cards` component to display the main content of the dashboard.
+    *   Added a `team-switcher` component for switching between teams.
+    *   Added a `date-range-picker` component for filtering data by date.
+    *   Added an `overview` component with a chart.
+    *   Added a `recent-sales` component to display recent sales.
+*   **Code Quality**:
+    *   Resolved all linting errors.
+    *   Refactored components to use `shadcn/ui` for a more consistent design.
+*   **Authentication Page UI/UX**:
+    *   Added a password strength indicator to the sign-up form.
+    *   Implemented a "Sign in with Magic Link" option.
+    *   Added an eye icon to toggle password visibility.
+*   **Toaster Notifications**: Added a global toaster component for displaying user feedback.
+*   **Refactored Authentication Handlers**:
+    *   Created a reusable `handleAuthError` function to reduce code duplication.
+    *   Added loading states to all authentication buttons for better user feedback.
+    *   Disabled forms during submission to prevent multiple submissions.
+*   **Enhanced Magic Link UX**:
+    *   The email field for the magic link is now pre-filled with the email from the main form.
+*   **Robust `createUserDocument` Function**:
+    *   The `createUserDocument` function now checks if a user document already exists before creating a new one, preventing data overwrites.
+*  **Groups Page UI/UX Enhancement**
+    *   The main groups page (`app/groups/page.tsx`) has been redesigned using `shadcn/ui` components for a more modern and intuitive user experience.
+    *   Group listings are now displayed in a grid of `Card` components, each with a clear title and description.
+    *   A prominent "Create Group" button with a `PlusCircle` icon has been added for easy access.
+*  **Create New Group Page**
+    *   A new page has been created at `app/groups/new/page.tsx` for creating new groups.
+    *   The form uses `shadcn/ui` `Input`, `Textarea`, and `Button` components, all wrapped in a `Card` for a clean, organized layout.
+    *   A `createGroup` server action has been implemented to handle form submissions and create new groups in Firestore.
+*  **Group Details Page**
+    *   The group details page (`app/groups/[groupId]/page.tsx`) has been enhanced with `shadcn/ui` components.
+    *   A `Tabs` component has been added to switch between viewing group members and inviting new friends.
+    *   A `GroupMembers` component has been created to display a list of all members in the group, with their avatars and display names.
+    *   The `InviteFriends` component allows users to select from their friends and invite them to the group.
+    *   A "Back to Groups" button has been added for easy navigation.
+

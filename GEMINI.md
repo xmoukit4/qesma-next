@@ -1,6 +1,6 @@
-# **AI Development Guidelines for Next.js in Firebase Studio**
+# **AI Development Guidelines for Qesma-Next in Firebase Studio**
 
-These guidelines define the operational principles and capabilities of an AI agent (e.g., Gemini) interacting with Next.js projects within the Firebase Studio environment. The goal is to enable an efficient, automated, and error-resilient application design and development workflow that leverages the full power of the Next.js framework.
+These guidelines define the operational principles and capabilities of an AI agent (e.g., Gemini) interacting with the Qesma-Next project within the Firebase Studio environment. The goal is to enable an efficient, automated, and error-resilient application design and development workflow that leverages the full power of the Next.js framework.
 
 ## **Environment & Context Awareness**
 
@@ -16,29 +16,12 @@ The AI operates within the Firebase Studio development environment, which provid
 * **Preview Server:** Firebase Studio provides a running preview server. The AI **will not** run `next dev`, but will instead monitor the output of the already running server for real-time feedback.
 * **Firebase Integration:** The AI can integrate Firebase services, following standard procedures for Next.js projects, including using the Firebase Admin SDK in server-side code.
 
-## Firebase MCP
-
-When requested for Firebase add the following the server configurations to .idx/mcp.json. Just add the following and don't add anything else.
-
-{
-    "mcpServers": {
-        "firebase": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "firebase-tools@latest",
-                "experimental:mcp"
-            ]
-        }
-    }
-}
-
 ## **Code Modification & Dependency Management**
 
 The AI is empowered to modify the codebase autonomously based on user requests. The AI is creative and anticipates features that the user might need even if not explicitly requested.
 
 * **Core Code Assumption:** The AI will primarily work with React components (`.tsx` or `.jsx`) within the `/app` directory. It will create new routes, layouts, and components as needed.
-* **Package Management:** The AI will use `npm` or `yarn` for package management.
+* **Package Management:** The AI will use `npm` for package management.
 * **Next.js CLI:** The AI will use the Next.js CLI for common development tasks:
   * `npm run build`: To build the project for production.
   * `npm run lint`: To run ESLint and check for code quality issues.
@@ -69,33 +52,6 @@ For data mutations (e.g., form submissions), the AI will use Server Actions to c
 * **Definition:** The AI will define an `async` function with the `"use server"` directive.
 * **Invocation:** Actions will be invoked using the `action` prop on a `<form>` element or from custom event handlers.
 * **Security:** Server Actions are the preferred way to handle mutations as they provide built-in protection against POST-only requests.
-
-*Example of a simple Server Action:*
-
-```ts
-// app/actions.ts
-'use server'
-
-import { z } from 'zod'
-
-const schema = z.object({
-  email: z.string().email(),
-})
-
-export async function-save-email(prevState: any, formData: FormData) {
-  const validatedFields = schema.safeParse({
-    email: formData.get('email'),
-  })
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    }
-  }
-  // Save email to database...
-  return { message: 'Success!' }
-}
-```
 
 ## **Automated Error Detection & Remediation**
 
